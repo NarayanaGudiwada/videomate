@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Topbar from './_components/topbar';
-import Canvas from './_components/canvas';
-import Sidebar from './_components/sidebar';
-import Timeline from './_components/timeline';
-import PropertiesPanel from './_components/properties-panel';
-import JsonEditorPanel from './_components/json-editor-panel';
+import Topbar from '@/app/designer/_components/topbar';
+import Canvas from '@/app/designer/_components/canvas';
+import Sidebar from '@/app/designer/_components/sidebar';
+import Timeline from '@/app/designer/_components/timeline';
+import PropertiesPanel from '@/app/designer/_components/properties-panel';
+import JsonEditorPanel from '@/app/designer/_components/json-editor-panel';
 // import VersionHistoryModal from './_components/version-history-modal'
 import { AdSizes } from '@/utils/ad-sizes';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import ElementsPanel from './_components/elements-panel';
+import ElementsPanel from '@/app/designer/_components/elements-panel';
 import { Rect, Circle, Text } from 'react-konva';
 import { useCollaboration } from '@/app/contexts/CollaborationContext';
 import { useParams } from 'next/navigation';

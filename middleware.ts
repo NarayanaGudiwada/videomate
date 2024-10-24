@@ -1,6 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)']);
+// need to add designer as public as we are using for share link for collaboration
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)', '/designer/:projectId']);
 
 export default clerkMiddleware((auth, request) => {
   if (!isPublicRoute(request)) {

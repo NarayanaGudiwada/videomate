@@ -15,7 +15,9 @@ import {
   Upload,
   Braces,
   Maximize2,
-  TimerReset
+  TimerReset,
+  Share2,
+  UserPlus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +27,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import ShareModal from './share-modal';
 
 interface TopbarProps {
   addElement: (type: string, event?: React.ChangeEvent<HTMLInputElement> | null) => void;
@@ -41,6 +44,7 @@ interface TopbarProps {
   handleVideoUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   initialTemplateName: string;
   onTemplateNameChange: (newName: string) => void;
+  projectId: string;
 }
 
 const Topbar: React.FC<TopbarProps> = ({
@@ -54,11 +58,13 @@ const Topbar: React.FC<TopbarProps> = ({
   handleImageUpload,
   handleVideoUpload,
   initialTemplateName,
-  onTemplateNameChange
+  onTemplateNameChange,
+  projectId
 }) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState(initialTemplateName);
   const nameRef = useRef<HTMLInputElement>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     if (isEditingName && nameRef.current) {
@@ -268,7 +274,23 @@ const Topbar: React.FC<TopbarProps> = ({
             </TooltipTrigger>
             <TooltipContent>Show Version History</TooltipContent>
           </Tooltip>
+
+          <div className="flex items-center space-x-2">
+            <Button
+              size="sm"
+              className="flex items-center space-x-2"
+              onClick={() => setIsShareModalOpen(true)}
+            >
+              <UserPlus className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          projectId={projectId}
+        />
       </div>
     </TooltipProvider>
   );

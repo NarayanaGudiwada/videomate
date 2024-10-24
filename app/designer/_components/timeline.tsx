@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Play, Pause, ArrowLeft, Rewind } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -45,6 +45,38 @@ const Timeline: React.FC<TimelineProps> = ({
       return elements.indexOf(a) - elements.indexOf(b);
     });
   };
+
+  const interpolateProperties = useCallback((element: TimelineElement, time: number) => {
+    if (!element.keyframes) return element;
+
+    const keyframeTimes = Object.keys(element.keyframes)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    if (keyframeTimes.length === 0) return element;
+
+    const prevKeyframeTime = keyframeTimes.filter((t) => t <= time).pop() || keyframeTimes[0];
+    const nextKeyframeTime = keyframeTimes.find((t) => t > time) || keyframeTimes[keyframeTimes.length - 1];
+
+    if (prevKeyframeTime === nextKeyframeTime) {
+      return { ...element, ...element.keyframes[prevKeyframeTime] };
+    }
+
+    const progress = (time - prevKeyframeTime) / (nextKeyframeTime - prevKeyframeTime);
+    const prevProps = element.keyframes[prevKeyframeTime];
+    const nextProps = element.keyframes[nextKeyframeTime];
+
+    const interpolatedProps = Object.keys(prevProps).reduce((acc, prop) => {
+      if (typeof prevProps[prop] === 'number' && typeof nextProps[prop] === 'number') {
+        acc[prop] = prevProps[prop] + (nextProps[prop] - prevProps[prop]) * progress;
+      } else {
+        acc[prop] = prevProps[prop];
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    return { ...element, ...interpolatedProps };
+  }, []);
 
   return (
     <div className="fixed bottom-0 left-[45px] right-0 h-64 bg-background overflow-hidden border-t border-border">
@@ -126,7 +158,7 @@ const Timeline: React.FC<TimelineProps> = ({
                                   ? 'text-primary-foreground'
                                   : 'text-secondary-foreground'
                               }`}>
-                              {el.type.charAt(0).toUpperCase() + el.type.slice(1)}
+                              {(el.type || 'Element').charAt(0).toUpperCase() + (el.type || 'Element').slice(1)}
                             </div>
                           </div>
                         </TooltipTrigger>
